@@ -3,6 +3,7 @@ import { useEffect, useState } from "preact/hooks";
 import MultiSelect from "multiselect-react-dropdown";
 import * as styles from "./result.display.module.less";
 import { ButtonComponent } from "./button.component";
+import { RATINGS, PRICEPERPERSON } from "../consts/search";
 // The filter options are these
 // Price per person
 // Hotel facilities
@@ -11,10 +12,23 @@ import { ButtonComponent } from "./button.component";
 interface resultDisplayProps {
   searchResults: any;
 }
+export type RatingOption = {
+  key: number;
+  rating: string;
+};
+export type PriceOption = {
+  min: number;
+  max: number;
+  description: string;
+};
 export default function ResultsDisplay(props: resultDisplayProps): JSX.Element {
-  const [pricePerPersonOptions, setPricePerPersonOptions] = useState([]);
+  const [pricePerPersonOptions, setPricePerPersonOptions] = useState<
+    PriceOption[]
+  >([]);
   const [hotelFacOptions, setHotelFacOptions] = useState([]);
-  const [starRatingOptions, setStarRatingOptions] = useState([]);
+  const [starRatingOptions, setStarRatingOptions] = useState<RatingOption[]>(
+    []
+  );
   const [priceSelected, setPriceSelected] = useState<any>([]);
   const [facSelected, setFacSelected] = useState<any>([]);
   const [rateSelected, setRateSelected] = useState<any>([]);
@@ -25,13 +39,7 @@ export default function ResultsDisplay(props: resultDisplayProps): JSX.Element {
     if (props && Object.keys(props.searchResults).length) {
       const holidaysList = props.searchResults.holidays;
       setResultData(holidaysList);
-      let priceOptions: any = [
-        ...new Set(
-          holidaysList.map((item: any, key) => {
-            return { key: key, price: item.pricePerPerson };
-          })
-        ),
-      ];
+
       let hotelFacList: any = [].concat.apply(
         [],
         holidaysList.map((item: any, key) => {
@@ -40,48 +48,29 @@ export default function ResultsDisplay(props: resultDisplayProps): JSX.Element {
       );
       const hotelFac: any = [...new Set(hotelFacList)];
 
-      let ratingOptions: any = [
-        ...new Set(
-          holidaysList.map((item: any) => {
-            let rate =
-              item.hotel.content && item.hotel.content.starRating
-                ? item.hotel.content.starRating
-                : "0";
-            return rate;
-          })
-        ),
-      ];
-      const finalRatingOptions = ratingOptions.map((item, key) => {
-        return { key: key, rating: item };
-      });
       const finalFacilityOptions = hotelFac.map((item, key) => {
         return { key: key, facility: item };
       });
-      setPricePerPersonOptions(priceOptions);
+      setPricePerPersonOptions(PRICEPERPERSON);
       setHotelFacOptions(finalFacilityOptions);
-      setStarRatingOptions(finalRatingOptions);
+      setStarRatingOptions(RATINGS);
     }
   }, [props.searchResults]);
-
-  const updateBasedOnPrice = (e) => {
-    setPriceSelected(e);
-  };
-  const updateBasedOnFac = (e) => {
-    setFacSelected(e);
-  };
-  const updateBasedOnRate = (e) => {
-    setRateSelected(e);
-  };
 
   const applyFilters = () => {
     let results = props.searchResults.holidays;
     if (priceSelected.length > 0) {
-      let selectedPrices = [
-        ...new Set(priceSelected.map((item) => item.price)),
-      ];
-      results = results.filter((result) => {
-        return selectedPrices.includes(result.pricePerPerson);
+      let filteredResult: any = [];
+      priceSelected.forEach((price) => {
+        let option = results.filter((result) => {
+          return (
+            result.pricePerPerson > price.min &&
+            result.pricePerPerson <= price.max
+          );
+        });
+        filteredResult.push(option);
       });
+      results = [].concat.apply([], filteredResult);
     }
     if (facSelected.length > 0) {
       let selectedFacility = [
@@ -102,6 +91,19 @@ export default function ResultsDisplay(props: resultDisplayProps): JSX.Element {
     }
     setResultData(results);
   };
+  const updateBasedOnPrice = (e) => {
+    setPriceSelected(e);
+    applyFilters();
+  };
+  const updateBasedOnFac = (e) => {
+    setFacSelected(e);
+    applyFilters();
+  };
+  const updateBasedOnRate = (e) => {
+    setRateSelected(e);
+    applyFilters();
+  };
+
   return (
     <div>
       <h1>Filters</h1>
@@ -110,7 +112,7 @@ export default function ResultsDisplay(props: resultDisplayProps): JSX.Element {
           <h3>Price per person : </h3>
           <MultiSelect
             options={pricePerPersonOptions}
-            displayValue={"price"}
+            displayValue={"description"}
             onSelect={updateBasedOnPrice}
             onRemove={updateBasedOnPrice}
           />
@@ -131,13 +133,6 @@ export default function ResultsDisplay(props: resultDisplayProps): JSX.Element {
             displayValue={"rating"}
             onSelect={updateBasedOnRate}
             onRemove={updateBasedOnRate}
-          />
-        </div>
-        <div className={styles["col"]}>
-          <ButtonComponent
-            text="Apply Filter"
-            type="BUTTON"
-            onClick={applyFilters}
           />
         </div>
       </div>
