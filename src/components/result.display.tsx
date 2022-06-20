@@ -21,33 +21,37 @@ export type PriceOption = {
   max: number;
   description: string;
 };
+type FacilitiesOptions = {
+  key: number;
+  facility: string;
+};
 export default function ResultsDisplay(props: resultDisplayProps): JSX.Element {
   const [pricePerPersonOptions, setPricePerPersonOptions] = useState<
     PriceOption[]
   >([]);
-  const [hotelFacOptions, setHotelFacOptions] = useState([]);
+  const [hotelFacOptions, setHotelFacOptions] = useState<FacilitiesOptions[]>(
+    []
+  );
   const [starRatingOptions, setStarRatingOptions] = useState<RatingOption[]>(
     []
   );
-  const [priceSelected, setPriceSelected] = useState<any>([]);
-  const [facSelected, setFacSelected] = useState<any>([]);
-  const [rateSelected, setRateSelected] = useState<any>([]);
+  const [priceSelected, setPriceSelected] = useState<PriceOption[]>([]);
+  const [facSelected, setFacSelected] = useState<FacilitiesOptions[]>([]);
+  const [rateSelected, setRateSelected] = useState<RatingOption[]>([]);
   const [resultData, setResultData] = useState<any>([]);
-  const resultHeaders = ["Name", "Place"];
 
   useEffect(() => {
     if (props && Object.keys(props.searchResults).length) {
       const holidaysList = props.searchResults.holidays;
+      console.log({ holidaysList });
       setResultData(holidaysList);
-
-      let hotelFacList: any = [].concat.apply(
+      let hotelFacList: string[] = [].concat.apply(
         [],
-        holidaysList.map((item: any, key) => {
+        holidaysList.map((item: any) => {
           return item.hotel.content.hotelFacilities;
         })
       );
-      const hotelFac: any = [...new Set(hotelFacList)];
-
+      const hotelFac: string[] = [...new Set(hotelFacList)];
       const finalFacilityOptions = hotelFac.map((item, key) => {
         return { key: key, facility: item };
       });
@@ -60,7 +64,7 @@ export default function ResultsDisplay(props: resultDisplayProps): JSX.Element {
   const applyFilters = () => {
     let results = props.searchResults.holidays;
     if (priceSelected.length > 0) {
-      let filteredResult: any = [];
+      let filteredResult: string[] = [];
       priceSelected.forEach((price) => {
         let option = results.filter((result) => {
           return (
@@ -105,29 +109,25 @@ export default function ResultsDisplay(props: resultDisplayProps): JSX.Element {
   };
 
   return (
-    <div>
-      <h1>Filters</h1>
+    <div className={styles["container"]}>
       <div className={styles["grid"]}>
         <div className={styles["col"]}>
-          <h3>Price per person : </h3>
+          <h1>Filter by...</h1>
+          <h5>Price per person : </h5>
           <MultiSelect
             options={pricePerPersonOptions}
             displayValue={"description"}
             onSelect={updateBasedOnPrice}
             onRemove={updateBasedOnPrice}
           />
-        </div>
-        <div className={styles["col"]}>
-          <h3>Hotel Facilities : </h3>
+          <h5>Hotel Facilities : </h5>
           <MultiSelect
             options={hotelFacOptions}
             displayValue={"facility"}
             onSelect={updateBasedOnFac}
             onRemove={updateBasedOnFac}
           />
-        </div>
-        <div className={styles["col"]}>
-          <h3>Star Ratings: </h3>
+          <h5>Star Ratings: </h5>
           <MultiSelect
             options={starRatingOptions}
             displayValue={"rating"}
@@ -136,26 +136,31 @@ export default function ResultsDisplay(props: resultDisplayProps): JSX.Element {
           />
         </div>
       </div>
-      <div className={styles["grid"]}>
-        {resultHeaders.map((header) => {
-          return (
-            <div className={styles["col"]}>
-              <h3> {header}</h3>
-            </div>
-          );
-        })}
-      </div>
-      {resultData.length &&
-        resultData.map((result) => {
-          return (
-            <div className={styles["grid"]}>
-              <div className={styles["col"]}>{result.hotel.name}</div>
-              <div className={styles["col"]}>
-                {result.hotel.content.parentLocation}
+      <div className={styles["card_container"]}>
+        {resultData.length &&
+          resultData.map((result) => {
+            return (
+              <div className={styles["card"]}>
+             
+                <img
+                  className={styles["img"]}
+                  src={result.hotel.content.images[0].MOBILE_MAIN.url}
+                />
+
+                <div className={styles["card_title"]}>{result.hotel.name}</div>
+                <div className={styles["textDetails"]}>
+                  <p>Key Features : </p>
+                  {result.hotel.content.keyFeatures.map((key) => {
+                    return <p>*{key.description}</p>;
+                  })}
+                </div>
+                <div className={styles["buttonStyle"]}>
+                  <ButtonComponent text="Add to Cart" type="SUBMIT" />
+                </div>
               </div>
-            </div>
-          );
-        })}
+            );
+          })}
+      </div>
     </div>
   );
 }

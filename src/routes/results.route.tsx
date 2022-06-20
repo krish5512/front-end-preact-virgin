@@ -6,6 +6,7 @@ import { doRequest } from "../services/http.service";
 import { BookingRequest, BookingResponse } from "../types/booking";
 import { DateTime } from "luxon";
 import ResultsDisplay from "../components/result.display";
+import * as styles from "../components/result.display.module.less";
 
 export default function ResultsRoute(): JSX.Element {
   const [searchParams] = useRouter();
@@ -44,7 +45,7 @@ export default function ResultsRoute(): JSX.Element {
     <section>
       <SearchComponent />
       {loader ? (
-        <h3>Please Wait ....</h3>
+        <div className={styles["loader"]} />
       ) : (
         <ResultsDisplay searchResults={searchResults} />
       )}
