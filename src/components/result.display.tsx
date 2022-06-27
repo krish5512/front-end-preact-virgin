@@ -139,18 +139,23 @@ export default function ResultsDisplay(props: resultDisplayProps): JSX.Element {
       <div className={styles["card_container"]}>
         {resultData.length &&
           resultData.map((result) => {
+            const featuresList = result.hotel.content.keyFeatures.filter(
+              (val, index) => index <= 5
+            );
             return (
               <div className={styles["card"]}>
-             
                 <img
                   className={styles["img"]}
                   src={result.hotel.content.images[0].MOBILE_MAIN.url}
                 />
 
                 <div className={styles["card_title"]}>{result.hotel.name}</div>
+                <br />
+                <br />
                 <div className={styles["textDetails"]}>
                   <p>Key Features : </p>
-                  {result.hotel.content.keyFeatures.map((key) => {
+                  <br />
+                  {featuresList.map((key) => {
                     return <p>*{key.description}</p>;
                   })}
                 </div>
