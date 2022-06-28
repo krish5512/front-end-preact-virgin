@@ -136,6 +136,8 @@ export default function ResultsDisplay(props: resultDisplayProps): JSX.Element {
           />
         </div>
       </div>
+      <p>Number of results found : {resultData.length}</p>
+
       <div className={styles["card_container"]}>
         {resultData.length &&
           resultData.map((result) => {
@@ -148,19 +150,52 @@ export default function ResultsDisplay(props: resultDisplayProps): JSX.Element {
                   className={styles["img"]}
                   src={result.hotel.content.images[0].MOBILE_MAIN.url}
                 />
-
-                <div className={styles["card_title"]}>{result.hotel.name}</div>
-                <br />
-                <br />
-                <div className={styles["textDetails"]}>
-                  <p>Key Features : </p>
-                  <br />
-                  {featuresList.map((key) => {
-                    return <p>*{key.description}</p>;
-                  })}
-                </div>
-                <div className={styles["buttonStyle"]}>
-                  <ButtonComponent text="Add to Cart" type="SUBMIT" />
+                <div className={styles["card_body"]}>
+                  <div className={styles["card_title"]}>
+                    {result.hotel.name}
+                  </div>
+                  <div className={styles["card_text"]}>
+                    {result.hotel.content.starRating ? (
+                      <p> Rating : {result.hotel.content.starRating}</p>
+                    ) : (
+                      <p> Rating : No rating</p>
+                    )}
+                  </div>
+                  <div className={styles["card_text"]}>
+                    {result.pricePerPerson ? (
+                      <p> Price Per Person : {result.pricePerPerson}</p>
+                    ) : (
+                      <p> No Pricing provided</p>
+                    )}
+                  </div>
+                  <div className={styles["card_text"]}>
+                    {result.hotel.content.hotelDescription ? (
+                      result.hotel.content.hotelDescription.length > 250 ? (
+                        <p>
+                          Hotel Description :
+                          {result.hotel.content.hotelDescription.substring(
+                            0,
+                            250
+                          )}
+                          ....<a href="#">Read more</a>
+                        </p>
+                      ) : (
+                        <p>
+                          Hotel Description :
+                          {result.hotel.content.hotelDescription}
+                        </p>
+                      )
+                    ) : (
+                      <p> Hotel Description : No Description provided</p>
+                    )}
+                  </div>
+                  <div className={styles["textDetails"]}>
+                    <p>Key Features : </p>
+                    <br />
+                    {featuresList.map((key) => {
+                      return <p>*{key.description}</p>;
+                    })}
+                  </div>
                 </div>
               </div>
             );

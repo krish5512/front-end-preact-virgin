@@ -34,11 +34,11 @@
 }
 .card_container {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: repeat(6, 13.75rem);
-  gap: 11%;
-  padding-left: 5%;
-  padding-top: 5%;
+  grid-template-columns: repeat(3, 10fr);
+  grid-auto-rows: 25rem;
+  row-gap: 35.625rem;
+  column-gap: 5rem;
+  padding: 5%;
 }
 .grid {
   display: grid;
@@ -86,56 +86,49 @@
 }
 .card {
   margin: 2%;
-  width: 100%;
-  height: 60%;
-  border-radius: 40px;
+  width: 30rem;
+  height: 59rem;
+  border-radius: 1.875rem;
+  border-style: groove;
   padding: 1%;
-  padding-bottom: 10px;
-  // box-shadow: 5px 5px 30px 7px rgba(0, 0, 0, 0.25),
-  //   -5px -5px 30px 7px rgba(0, 0, 0, 0.22);
   transition: 0.4s;
-  .card_image {
-    width: inherit;
-    // height: inherit;
-    border-radius: 4px;
-  }
-  .img {
-    width: inherit;
-    border-radius: 40px;
-    object-fit: cover;
-  }
+  align-items: center;
+}
+.img {
+  width: 28.625rem;
+  height: 25.625rem;
+  border-radius: 1.875rem;
+  object-fit: cover;
+  float: left;
+}
+.card_body {
+  width: 28.625rem;
+  height: 25.625rem;
+  margin: 5px;
+  padding: 5px;
+  float: left;
+  clear: left;
 }
 .card_title {
-  text-align: center;
-  border-radius: 0px 0px 4px 4px;
-  font-family: sans-serif;
+  text-align: left;
   font-weight: bold;
   font-size: 20px;
-  margin-top: -80px;
-  color: white;
+  color: rgb(42, 25, 25);
 }
 .card_text {
-  text-align: center;
-  border-radius: 0px 0px 40px 40px;
-  font-family: sans-serif;
+  text-align: left;
   font-weight: bold;
   font-size: 10px;
-  margin-top: 40px;
   color: rgb(15, 14, 14);
 }
 .textDetails {
   text-align: left;
-  margin-top: 10%;
-  font-family: sans-serif;
   font-weight: bold;
-  font-size: 10px;
+  font-size: 11px;
   color: rgb(19, 18, 18);
   height: 9px;
   display: grid;
   grid-template-columns: repeat(2, 1.5fr);
   grid-template-rows: repeat(6, 20px);
   gap: 5%;
-}
-.buttonStyle {
-  margin-top: 50%;
 }
