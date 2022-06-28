@@ -32,13 +32,24 @@
   display: flex;
   flex-direction: row;
 }
+.result_Container {
+  display: flex;
+  flex-direction: column;
+}
+.result_Count {
+  padding-top: 40px;
+  padding-left: 40px;
+  width: 300px;
+}
 .card_container {
   display: grid;
   grid-template-columns: repeat(3, 10fr);
   grid-auto-rows: 25rem;
   row-gap: 35.625rem;
   column-gap: 5rem;
-  padding: 5%;
+  padding: 2%;
+  float: left;
+  clear: left;
 }
 .grid {
   display: grid;
@@ -89,8 +100,9 @@
   width: 30rem;
   height: 59rem;
   border-radius: 1.875rem;
-  border-style: groove;
+  border-style: outset;
   padding: 1%;
+  background-color: rgba(0, 0, 0, 0.10);
   transition: 0.4s;
   align-items: center;
 }
