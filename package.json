@@ -69,7 +69,8 @@
     "preact": "10.5.10",
     "preact-async-route": "^2.2.1",
     "preact-material-components": "^1.6.1",
-    "preact-router": "^4.0.1"
+    "preact-router": "^4.0.1",
+    "react-select": "^5.3.2"
   },
   "alias": {
     "react": "preact/compat",

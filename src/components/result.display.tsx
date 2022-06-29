@@ -1,13 +1,11 @@
 import { h, JSX } from "preact";
 import { useEffect, useState } from "preact/hooks";
 import MultiSelect from "multiselect-react-dropdown";
+import { default as ReactSelect } from "react-select";
+import Option from "../assets/multiselect/Options";
 import * as styles from "./result.display.module.less";
 import { ButtonComponent } from "./button.component";
 import { RATINGS, PRICEPERPERSON } from "../consts/search";
-// The filter options are these
-// Price per person
-// Hotel facilities
-// Star rating
 
 interface resultDisplayProps {
   searchResults: any;
@@ -39,7 +37,7 @@ export default function ResultsDisplay(props: resultDisplayProps): JSX.Element {
   const [facSelected, setFacSelected] = useState<FacilitiesOptions[]>([]);
   const [rateSelected, setRateSelected] = useState<RatingOption[]>([]);
   const [resultData, setResultData] = useState<any>([]);
-
+  const [optionSelected, setOptionSelected] = useState<PriceOption[]>([]);
   useEffect(() => {
     if (props && Object.keys(props.searchResults).length) {
       const holidaysList = props.searchResults.holidays;
@@ -99,13 +97,59 @@ export default function ResultsDisplay(props: resultDisplayProps): JSX.Element {
     setPriceSelected(e);
     applyFilters();
   };
-  const updateBasedOnFac = (e) => {
-    setFacSelected(e);
+  const updateBasedOnFac = (selected) => {
     applyFilters();
+    console.log(selected.target.value, priceSelected);
+    const selOp: any = facSelected.find(
+      (fac) => fac.facility === selected.target.value
+    );
+    console.log(selOp);
+    let currSel = facSelected;
+    if (selOp === undefined) {
+      //push the item;
+      const currOp: any = hotelFacOptions.find(
+        (hotelFac) => hotelFac.facility === selected.target.value
+      );
+
+      console.log(currOp);
+      currSel.push(currOp);
+    } else {
+      currSel = facSelected.filter(
+        (fac) => fac.facility !== selected.target.value
+      );
+    }
+    console.log({ currSel });
+    setFacSelected(currSel);
+    setOptionSelected(selected);
   };
   const updateBasedOnRate = (e) => {
     setRateSelected(e);
+    console.log({ e });
     applyFilters();
+  };
+  const handleChange = (selected) => {
+    console.log(selected.target.value, priceSelected);
+    const selOp: any = priceSelected.find(
+      (priceVal) => priceVal.description === selected.target.value
+    );
+    console.log(selOp);
+    let currSel = priceSelected;
+    if (selOp === undefined) {
+      //push the item;
+      const currOp: any = pricePerPersonOptions.find(
+        (priceVal) => priceVal.description === selected.target.value
+      );
+
+      console.log(currOp);
+      currSel.push(currOp);
+    } else {
+      currSel = priceSelected.filter(
+        (price) => price.description !== selected.target.value
+      );
+    }
+    console.log({ currSel });
+    setPriceSelected(currSel);
+    setOptionSelected(selected);
   };
 
   return (
@@ -113,27 +157,74 @@ export default function ResultsDisplay(props: resultDisplayProps): JSX.Element {
       <div className={styles["grid"]}>
         <div className={styles["col"]}>
           <h1>Filter by...</h1>
-
           <h5>Price per person : </h5>
-          <MultiSelect
+          {/* <MultiSelect
             options={pricePerPersonOptions}
             displayValue={"description"}
             onSelect={updateBasedOnPrice}
             onRemove={updateBasedOnPrice}
-          />
+          /> */}
+          {pricePerPersonOptions.map((price) => {
+            return (
+              <div>
+                <input
+                  type="checkbox"
+                  id={price.description}
+                  name={price.description}
+                  value={price.description}
+                  checked={priceSelected.find(
+                    (priceVal) => priceVal.description === price.description
+                  )}
+                  onChange={(price) => handleChange(price)}
+                />
+                {price.description}
+              </div>
+            );
+          })}
+
           <h5>Hotel Facilities : </h5>
-          <MultiSelect
+          {/* <MultiSelect
             options={hotelFacOptions}
             displayValue={"facility"}
             onSelect={updateBasedOnFac}
             onRemove={updateBasedOnFac}
-          />
+          /> */}
+          {hotelFacOptions.map((hotel) => {
+            return (
+              <div>
+                <input
+                  type="checkbox"
+                  id={hotel.key}
+                  name={hotel.facility}
+                  value={hotel.facility}
+                  checked={facSelected.find(
+                    (hotelVal) => hotelVal.facility === hotel.facility
+                  )}
+                  onChange={(fac) => updateBasedOnFac(fac)}
+                />
+                {hotel.facility}
+              </div>
+            );
+          })}
           <h5>Star Ratings: </h5>
           <MultiSelect
             options={starRatingOptions}
             displayValue={"rating"}
             onSelect={updateBasedOnRate}
             onRemove={updateBasedOnRate}
+          />
+          <ReactSelect
+            options={pricePerPersonOptions}
+            isMulti
+            closeMenuOnSelect={false}
+            hideSelectedOptions={false}
+            components={{
+              Option,
+            }}
+            onChange={handleChange}
+            displayValue={"description"}
+            allowSelectAll={true}
+            value={optionSelected}
           />
         </div>
       </div>
@@ -159,7 +250,7 @@ export default function ResultsDisplay(props: resultDisplayProps): JSX.Element {
                     </div>
                     <div className={styles["card_text"]}>
                       {result.hotel.content.starRating ? (
-                        <p> Rating : {result.hotel.content.starRating}</p>
+                        <p> Rating : {result.hotel.content.starRating} stars</p>
                       ) : (
                         <p> Rating : No rating</p>
                       )}
