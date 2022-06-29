@@ -156,7 +156,7 @@ export default function ResultsDisplay(props: resultDisplayProps): JSX.Element {
           <h5>Price per person : </h5>
           {pricePerPersonOptions.map((price) => {
             return (
-              <div>
+              <div className={styles["filter_text"]}>
                 <input
                   type="checkbox"
                   id={price.description}
@@ -179,7 +179,7 @@ export default function ResultsDisplay(props: resultDisplayProps): JSX.Element {
           <h5>Hotel Facilities : </h5>
           {hotelFacOptions.map((hotel) => {
             return (
-              <div>
+              <div className={styles["filter_text"]}>
                 <input
                   type="checkbox"
                   id={hotel.facility}
@@ -201,7 +201,7 @@ export default function ResultsDisplay(props: resultDisplayProps): JSX.Element {
           <h5>Star Ratings: </h5>
           {starRatingOptions.reverse().map((star) => {
             return (
-              <div>
+              <div className={styles["filter_text"]}>
                 <input
                   type="checkbox"
                   id={star.rating}
